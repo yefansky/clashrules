@@ -1,0 +1,203 @@
+port: 7890
+socks-port: 7891
+redir-port: 7892
+mixed-port: 7890
+mode: rule
+log-level: info
+external-controller: 127.0.0.1:9090
+secret: ''
+allow-lan: true
+bind-address: '*'
+ipv6: false
+
+# 策略组定义
+proxy-groups:
+  - name: 🚀 GPT
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    # 使用 filter 正则表达式，自动筛选节点名包含 GPT 的节点
+    filter: "GPT|Gpt|gpt"
+
+  - name: 🌏 HONGKONG
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    # 自动筛选节点名包含 香港/HK/Hongkong 的节点
+    filter: "香港|HK|Hongkong|hongkong"
+
+  - name: 🇺🇸 USA
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    # 自动筛选节点名包含 美国/US/USA 的节点
+    filter: "美国|US|United States|美国"
+
+  - name: 🔍 Google
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    # 指向香港组作为备份（你可以调整 filter 来筛选特定节点）
+    use:
+      - 🌏 HONGKONG  # 将 Google 组关联到香港节点
+
+  - name: 🌍 国外媒体
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    # 筛选国外媒体节点（你可以调整 filter 为特定关键词，如 "媒体|Media"）
+    filter: "媒体|Media|国外|Foreign"
+
+  - name: 🎯 自动选择
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    use:
+      - ALL_PROXIES # 此关键字代表所有订阅中的节点
+
+# 规则定义
+rules:
+  # 1. AI 服务指向 GPT 组 (原有 + 扩展)
+  - DOMAIN-SUFFIX,openai.com,🚀 GPT
+  - DOMAIN-SUFFIX,chatgpt.com,🚀 GPT
+  - DOMAIN-SUFFIX,oaistatic.com,🚀 GPT
+  - DOMAIN-SUFFIX,groq.com,🚀 GPT
+  # Grok (xAI)
+  - DOMAIN-SUFFIX,x.ai,🚀 GPT
+  - DOMAIN-SUFFIX,grok.x.ai,🚀 GPT
+  # Gemini (Google AI)
+  - DOMAIN-SUFFIX,gemini.google.com,🚀 GPT
+  # Claude (Anthropic)
+  - DOMAIN-SUFFIX,claude.ai,🚀 GPT
+  - DOMAIN-SUFFIX,anthropic.com,🚀 GPT
+
+  # 2. Google 服务指向专用 Google 组 (新添加)
+  - DOMAIN-SUFFIX,google.com,🔍 Google
+  - DOMAIN-SUFFIX,google.com.hk,🔍 Google
+  - DOMAIN-SUFFIX,googleapis.com,🔍 Google
+  - DOMAIN-SUFFIX,gstatic.com,🔍 Google
+  - DOMAIN-KEYWORD,google,🔍 Google
+
+  # 3. 苹果和微软服务直连 (新添加)
+  - DOMAIN-SUFFIX,apple.com,DIRECT
+  - DOMAIN-SUFFIX,icloud.com,DIRECT
+  - DOMAIN-SUFFIX,me.com,DIRECT
+  - DOMAIN-SUFFIX,mzstatic.com,DIRECT
+  - DOMAIN-SUFFIX,microsoft.com,DIRECT
+  - DOMAIN-SUFFIX,azure.com,DIRECT
+  - DOMAIN-SUFFIX,office.com,DIRECT
+  - DOMAIN-SUFFIX,windows.net,DIRECT
+  - DOMAIN-SUFFIX,office.net,DIRECT
+
+  # 4. Steam 相关 (商店/论坛/图片指向香港组，下载直连 - 新添加)
+  # Steam 商店、社区、图片等指向香港组
+  - DOMAIN-SUFFIX,steampowered.com,🌏 HONGKONG
+  - DOMAIN-SUFFIX,steamcommunity.com,🌏 HONGKONG
+  - DOMAIN-SUFFIX,steamstatic.com,🌏 HONGKONG
+  - DOMAIN-SUFFIX,steam-chat.com,🌏 HONGKONG
+  - DOMAIN-SUFFIX,steamcdn-a.akamaihd.net,🌏 HONGKONG
+  # Steam 下载相关直连 (避免流量浪费)
+  - DOMAIN-SUFFIX,steamcontent.com,DIRECT
+  - DOMAIN-SUFFIX,steamgames.com,DIRECT
+  - DOMAIN-SUFFIX,steamusercontent.com,DIRECT
+  - DOMAIN-KEYWORD,steamdownload,DIRECT
+  - DOMAIN-KEYWORD,steamcdn,DIRECT  # 但如果包含 akamaihd 的已在上方指向香港
+
+  # 5. 常用视频网站 (YouTube 等指向国外媒体组 - 新添加)
+  - DOMAIN-SUFFIX,youtube.com,🌍 国外媒体
+  - DOMAIN-SUFFIX,ytimg.com,🌍 国外媒体
+  - DOMAIN-SUFFIX,netflix.com,🌍 国外媒体
+  - DOMAIN-SUFFIX,netflix.net,🌍 国外媒体
+  - DOMAIN-SUFFIX,vimeo.com,🌍 国外媒体
+  - DOMAIN-SUFFIX,twitch.tv,🌍 国外媒体
+  - DOMAIN-SUFFIX,bilibili.com,DIRECT  # 国内视频直连
+  - DOMAIN-SUFFIX,iqiyi.com,DIRECT
+  - DOMAIN-SUFFIX,youku.com,DIRECT
+
+  # 6. 成人网站 (借鉴你的列表，指向国外媒体组 - 新添加)
+  - DOMAIN-SUFFIX,pornhub.com,🌍 国外媒体
+  - DOMAIN-KEYWORD,pornhub,🌍 国外媒体
+  - DOMAIN-SUFFIX,b49t.com,🌍 国外媒体
+  - DOMAIN-SUFFIX,busfan.club,🌍 国外媒体
+  - DOMAIN-SUFFIX,javdb521.com,🌍 国外媒体
+  - DOMAIN-SUFFIX,avsox.website,🌍 国外媒体
+  - DOMAIN-SUFFIX,javlibrary.com,🌍 国外媒体
+  - DOMAIN-SUFFIX,airav.wiki,🌍 国外媒体
+  - DOMAIN-SUFFIX,av-wiki.net,🌍 国外媒体
+  - DOMAIN-SUFFIX,dl.getchu.com,🌍 国外媒体
+  - DOMAIN-SUFFIX,dmm.co.jp,🌍 国外媒体
+  - DOMAIN-SUFFIX,adult.contents.fc2.com,🌍 国外媒体
+  - DOMAIN-SUFFIX,gyutto.com,🌍 国外媒体
+  - DOMAIN-SUFFIX,jav321.com,🌍 国外媒体
+  - DOMAIN-SUFFIX,javbus.com,🌍 国外媒体
+  - DOMAIN-SUFFIX,javdb.com,🌍 国外媒体
+  - DOMAIN-SUFFIX,javlibrary.com,🌍 国外媒体
+  - DOMAIN-SUFFIX,mrzyx.xyz,🌍 国外媒体
+  - DOMAIN-SUFFIX,mgstage.com,🌍 国外媒体
+  - DOMAIN-SUFFIX,db.msin.jp,🌍 国外媒体
+  - DOMAIN-SUFFIX,prestige-av.com,🌍 国外媒体
+  - DOMAIN-SUFFIX,avsox.monster,🌍 国外媒体
+  - DOMAIN-SUFFIX,tubeninja.net,🌍 国外媒体
+
+  # 7. (DIRECT 和其他)
+  - DOMAIN-SUFFIX,oray.com,DIRECT
+  - DOMAIN-SUFFIX,oraybox.com,DIRECT
+  - DOMAIN-SUFFIX,cloudns.net,DIRECT
+  - DOMAIN-SUFFIX,huggingface.co,🌍 国外媒体
+  - DOMAIN-KEYWORD,github,🌍 国外媒体
+  - DOMAIN-KEYWORD,githubusercontent,🌍 国外媒体
+  - DOMAIN-KEYWORD,youtube,🌍 国外媒体
+  - DOMAIN-KEYWORD,touhou,DIRECT
+  - DOMAIN-KEYWORD,weibo,DIRECT
+  - DOMAIN-SUFFIX,plexmedia.cn,🌍 国外媒体
+  - DOMAIN-SUFFIX,checkip.dyndns.org,DIRECT
+  - DOMAIN-SUFFIX,checkipv6.dyndns.org,DIRECT
+  - DOMAIN-SUFFIX,checkip.synology.com,DIRECT
+  - DOMAIN-SUFFIX,ifconfig.co,DIRECT
+  - DOMAIN-SUFFIX,api.myip.com,DIRECT
+  - DOMAIN-SUFFIX,ip-api.com,DIRECT
+  - DOMAIN-SUFFIX,ipapi.co,DIRECT
+  - DOMAIN-SUFFIX,ip6.seeip.org,DIRECT
+  - DOMAIN-SUFFIX,members.3322.org,DIRECT
+  - DOMAIN-KEYWORD,nvidia,DIRECT
+  - DOMAIN-SUFFIX,ipinfo.io,DIRECT
+  - DOMAIN-SUFFIX,icanhazip.com,DIRECT
+  - DOMAIN-SUFFIX,myip.la,DIRECT
+  - DOMAIN-SUFFIX,jsonip.com,DIRECT
+  - DOMAIN-SUFFIX,api.ipify.org,DIRECT
+  - DOMAIN-SUFFIX,api64.ipify.org,DIRECT
+  - DOMAIN-SUFFIX,checkip.amazonaws.com,DIRECT
+  - DOMAIN-SUFFIX,ip.seeip.org,DIRECT
+  - DOMAIN-SUFFIX,ifconfig.me,DIRECT
+  - DOMAIN-SUFFIX,ident.me,DIRECT
+  - DOMAIN-SUFFIX,wtfismyip.com,DIRECT
+  - DOMAIN-SUFFIX,ipaddr.site,DIRECT
+  - DOMAIN-SUFFIX,cip.cc,DIRECT
+  - DOMAIN-SUFFIX,ip.cn,DIRECT
+  - DOMAIN-SUFFIX,whois.pconline.com.cn,DIRECT
+  - DOMAIN-SUFFIX,pv.sohu.com,DIRECT
+  - DOMAIN-SUFFIX,ip.taobao.com,DIRECT
+  - DOMAIN-SUFFIX,ip.qq.com,DIRECT
+  - DOMAIN-SUFFIX,ips.chinaz.com,DIRECT
+  - DOMAIN-SUFFIX,ip.chinaz.com,DIRECT
+  - DOMAIN-SUFFIX,whatismyip.akamai.com,DIRECT
+  - DOMAIN-SUFFIX,myip.ipip.net,DIRECT
+  - DOMAIN-SUFFIX,geoip.hidemyass.com,DIRECT
+  - DOMAIN-KEYWORD,geolocation,DIRECT
+  - DOMAIN-KEYWORD,geoip,DIRECT
+  - DOMAIN-KEYWORD,ipgeo,DIRECT
+  - DOMAIN-SUFFIX,oray.com,DIRECT
+  - DOMAIN-SUFFIX,oray.net,DIRECT
+  - DOMAIN-SUFFIX,sunlogin.com,DIRECT
+  - DOMAIN-SUFFIX,sunlogin.cn,DIRECT
+  - DOMAIN-SUFFIX,sunlogin.info,DIRECT
+  - DOMAIN,ddns.oray.com,DIRECT
+  - DOMAIN-KEYWORD,sunlogin,DIRECT
+  - DOMAIN-KEYWORD,oray,DIRECT
+
+  # 8. 通用规则 (借鉴常见配置：国内直连、国外代理、最终匹配)
+  - DOMAIN-SUFFIX,cn,DIRECT
+  - GEOIP,CN,DIRECT
+  - DOMAIN-SUFFIX,github.com,🎯 自动选择
+  - IP-CIDR,127.0.0.0/8,DIRECT
+  - MATCH,🎯 自动选择 # 最终规则，匹配所有其他流量
