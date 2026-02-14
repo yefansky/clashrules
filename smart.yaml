@@ -99,14 +99,53 @@ dns:
 # 如果相应分组没有筛选到对应的国家，请根据自己节点名字调整筛选关键字。
 # 没有再使用锚点，是考虑很多新手修改难度，这样新手修改某个分组更容易些。
 proxy-groups:
-  # --- 1. 核心业务分组 (优先级：港 > 台 > 韩 > 日 > 新 > 越 > 泰 > 美 > 俄 > 英 > 德) ---
-  - {name: 🚀 默认代理, type: select, proxies: [🔯 香港故转, 🔯 台湾故转, 🔯 韩国故转, 🔯 日本故转, 🔯 新加坡故转, 🔯 越南故转, 🔯 泰国故转, 🔯 美国故转, 🔯 俄罗斯故转, 🔯 英国故转, 🔯 德国故转, ♻️ 香港自动, ♻️ 台湾自动, ♻️ 韩国自动, ♻️ 日本自动, ♻️ 新加坡自动, ♻️ 越南自动, ♻️ 泰国自动, ♻️ 美国自动, ♻️ 俄罗斯自动, ♻️ 英国自动, ♻️ 德国自动, ♻️ 自动选择, 🌐 全部节点, 直连]}
-  - {name: 🎮 Steam, type: select, proxies: [🔯 香港故转, 🔯 台湾故转, 🔯 韩国故转, 🔯 日本故转, 🔯 新加坡故转, 🔯 越南故转, 🔯 泰国故转, 🔯 美国故转, 🔯 俄罗斯故转, 🔯 英国故转, 🔯 德国故转, ♻️ 香港自动, ♻️ 台湾自动, ♻️ 韩国自动, ♻️ 日本自动, ♻️ 新加坡自动, ♻️ 越南自动, ♻️ 泰国自动, ♻️ 美国自动, ♻️ 俄罗斯自动, ♻️ 英国自动, ♻️ 德国自动, ♻️ 自动选择, 🌐 全部节点, 直连]}
-  - {name: 👨🏿‍💻 GitHub, type: select, proxies: [🔯 香港故转, 🔯 台湾故转, 🔯 韩国故转, 🔯 日本故转, 🔯 新加坡故转, 🔯 越南故转, 🔯 泰国故转, 🔯 美国故转, 🔯 俄罗斯故转, 🔯 英国故转, 🔯 德国故转, ♻️ 香港自动, ♻️ 台湾自动, ♻️ 韩国自动, ♻️ 日本自动, ♻️ 新加坡自动, ♻️ 越南自动, ♻️ 泰国自动, ♻️ 美国自动, ♻️ 俄罗斯自动, ♻️ 英国自动, ♻️ 德国自动, ♻️ 自动选择, 🌐 全部节点, 直连]}
-  - {name: 📹 YouTube, type: select, proxies: [🔯 香港故转, 🔯 台湾故转, 🔯 韩国故转, 🔯 日本故转, 🔯 新加坡故转, 🔯 越南故转, 🔯 泰国故转, 🔯 美国故转, 🔯 俄罗斯故转, 🔯 英国故转, 🔯 德国故转, ♻️ 香港自动, ♻️ 台湾自动, ♻️ 韩国自动, ♻️ 日本自动, ♻️ 新加坡自动, ♻️ 越南自动, ♻️ 泰国自动, ♻️ 美国自动, ♻️ 俄罗斯自动, ♻️ 英国自动, ♻️ 德国自动, ♻️ 自动选择, 🌐 全部节点, 直连]}
-  - {name: 🍀 Google, type: select, proxies: [🔯 香港故转, 🔯 台湾故转, 🔯 韩国故转, 🔯 日本故转, 🔯 新加坡故转, 🔯 越南故转, 🔯 泰国故转, 🔯 美国故转, 🔯 俄罗斯故转, 🔯 英国故转, 🔯 德国故转, ♻️ 香港自动, ♻️ 台湾自动, ♻️ 韩国自动, ♻️ 日本自动, ♻️ 新加坡自动, ♻️ 越南自动, ♻️ 泰国自动, ♻️ 美国自动, ♻️ 俄罗斯自动, ♻️ 英国自动, ♻️ 德国自动, ♻️ 自动选择, 🌐 全部节点, 直连]}
-  - {name: 📲 Telegram, type: select, proxies: [🔯 香港故转, 🔯 台湾故转, 🔯 韩国故转, 🔯 日本故转, 🔯 新加坡故转, 🔯 越南故转, 🔯 泰国故转, 🔯 美国故转, 🔯 俄罗斯故转, 🔯 英国故转, 🔯 德国故转, ♻️ 香港自动, ♻️ 台湾自动, ♻️ 韩国自动, ♻️ 日本自动, ♻️ 新加坡自动, ♻️ 越南自动, ♻️ 泰国自动, ♻️ 美国自动, ♻️ 俄罗斯自动, ♻️ 英国自动, ♻️ 德国自动, ♻️ 自动选择, 🌐 全部节点, 直连]}
+  # 1. 定义锚点 (&all_proxies)
+  - name: 🚀 默认代理
+    type: select
+    proxies: &all_proxies
+      - 🔯 香港故转
+      - 🔯 台湾故转
+      - 🔯 韩国故转
+      - 🔯 日本故转
+      - 🔯 新加坡故转
+      - 🔯 越南故转
+      - 🔯 泰国故转
+      - 🔯 美国故转
+      - 🔯 俄罗斯故转
+      - 🔯 英国故转
+      - 🔯 德国故转
+      - 🔯 卢森堡故转
+      - 🔯 澳大利亚故转
+      - 🔯 土耳其故转
+      - 🔯 巴西故转
+      - 🔯 阿根廷故转
+      - ♻️ 香港自动
+      - ♻️ 台湾自动
+      - ♻️ 韩国自动
+      - ♻️ 日本自动
+      - ♻️ 新加坡自动
+      - ♻️ 越南自动
+      - ♻️ 泰国自动
+      - ♻️ 美国自动
+      - ♻️ 俄罗斯自动
+      - ♻️ 英国自动
+      - ♻️ 德国自动
+      - ♻️ 卢森堡自动
+      - ♻️ 澳大利亚自动
+      - ♻️ 土耳其自动
+      - ♻️ 巴西自动
+      - ♻️ 阿根廷自动
+      - ♻️ 自动选择
+      - 🌐 全部节点
+      - 直连
 
+  # 2. 直接引用 (*all_proxies)
+  - {name: 🎮 Steam, type: select, proxies: *all_proxies}
+  - {name: 👨🏿‍💻 GitHub, type: select, proxies: *all_proxies}
+  - {name: 📹 YouTube, type: select, proxies: *all_proxies}
+  - {name: 🍀 Google, type: select, proxies: *all_proxies}
+  - {name: 📲 Telegram, type: select, proxies: *all_proxies}
+  - {name: 🔞 Porn, type: select, proxies: *all_proxies}
   - {name: 🤖 ChatGPT, type: select, include-all: true, filter: "(?i).*GPT.*"}
   - {name: 🎵 TikTok, type: select, include-all: true, filter: "(?i).*TK.*"}
   - {name: 🎥 NETFLIX, type: select, include-all: true, filter: "(?i).*NF.*"}
@@ -118,7 +157,7 @@ proxy-groups:
   
   - {name: 🐟 漏网之鱼, type: select, proxies: [🚀 默认代理, 直连]}
 
-  # --- 2. 故障转移分组 (Fallback) - 11个地区全补齐 ---
+  # --- 2. 故障转移分组 (Fallback) - 16 个地区 ---
   - {name: 🔯 香港故转, type: fallback, include-all: true, interval: 300, filter: "(?i)港|HK|Hong Kong"}
   - {name: 🔯 台湾故转, type: fallback, include-all: true, interval: 300, filter: "(?i)台|TW|Taiwan"}
   - {name: 🔯 韩国故转, type: fallback, include-all: true, interval: 300, filter: "(?i)韩|KR|Korea"}
@@ -130,8 +169,13 @@ proxy-groups:
   - {name: 🔯 俄罗斯故转, type: fallback, include-all: true, interval: 300, filter: "(?i)俄|RU|Russia"}
   - {name: 🔯 英国故转, type: fallback, include-all: true, interval: 300, filter: "(?i)英|UK|United Kingdom"}
   - {name: 🔯 德国故转, type: fallback, include-all: true, interval: 300, filter: "(?i)德|DE|Germany"}
+  - {name: 🔯 卢森堡故转, type: fallback, include-all: true, interval: 300, filter: "(?i)卢森堡|LU|Luxembourg"}
+  - {name: 🔯 巴西故转, type: fallback, include-all: true, interval: 300, filter: "(?i)巴西|BR|Brazil"}
+  - {name: 🔯 土耳其故转, type: fallback, include-all: true, interval: 300, filter: "(?i)土耳其|TR|Turkey"}
+  - {name: 🔯 阿根廷故转, type: fallback, include-all: true, interval: 300, filter: "(?i)阿根廷|AR|Argentina"}
+  - {name: 🔯 澳大利亚故转, type: fallback, include-all: true, interval: 300, filter: "(?i)澳|AU|Australia"}
 
-  # --- 3. 自动测速分组 (URL-Test) - 11个地区全补齐 ---
+  # --- 3. 自动测速分组 (URL-Test) - 16 个地区 ---
   - {name: ♻️ 香港自动, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?i)港|HK|Hong Kong"}
   - {name: ♻️ 台湾自动, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?i)台|TW|Taiwan"}
   - {name: ♻️ 韩国自动, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?i)韩|KR|Korea"}
@@ -143,9 +187,14 @@ proxy-groups:
   - {name: ♻️ 俄罗斯自动, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?i)俄|RU|Russia"}
   - {name: ♻️ 英国自动, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?i)英|UK|United Kingdom"}
   - {name: ♻️ 德国自动, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?i)德|DE|Germany"}
+  - {name: ♻️ 卢森堡自动, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?i)卢森堡|LU|Luxembourg"}
+  - {name: ♻️ 巴西自动, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?i)巴西|BR|Brazil"}
+  - {name: ♻️ 土耳其自动, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?i)土耳其|TR|Turkey"}
+  - {name: ♻️ 阿根廷自动, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?i)阿根廷|AR|Argentina"}
+  - {name: ♻️ 澳大利亚自动, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?i)澳|AU|Australia"}
   - {name: ♻️ 自动选择, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "^((?!(直连)).)*$"}
 
-  # --- 4. 手动选择节点分组 - 11个地区全补齐 ---
+  # --- 4. 手动选择节点分组 (16 国美化版) ---
   - {name: 🇭🇰 香港节点, type: select, include-all: true, filter: "(?i)港|HK|Hong Kong"}
   - {name: 🇹🇼 台湾节点, type: select, include-all: true, filter: "(?i)台|TW|Taiwan"}
   - {name: 🇰🇷 韩国节点, type: select, include-all: true, filter: "(?i)韩|KR|Korea"}
@@ -153,10 +202,15 @@ proxy-groups:
   - {name: 🇸🇬 新加坡节点, type: select, include-all: true, filter: "(?i)新加坡|SG|Singapore"}
   - {name: 🇻🇳 越南节点, type: select, include-all: true, filter: "(?i)越南|VN|Vietnam"}
   - {name: 🇹🇭 泰国节点, type: select, include-all: true, filter: "(?i)泰|TH|Thailand"}
-  - {name: 🇺🇲 美国节点, type: select, include-all: true, filter: "(?i)美|US|States|America"}
+  - {name: 🇺🇸 美国节点, type: select, include-all: true, filter: "(?i)美|US|States|America"}
   - {name: 🇷🇺 俄罗斯节点, type: select, include-all: true, filter: "(?i)俄|RU|Russia"}
   - {name: 🇬🇧 英国节点, type: select, include-all: true, filter: "(?i)英|UK|United Kingdom"}
   - {name: 🇩🇪 德国节点, type: select, include-all: true, filter: "(?i)德|DE|Germany"}
+  - {name: 🇱🇺 卢森堡节点, type: select, include-all: true, filter: "(?i)卢森堡|LU|Luxembourg"}
+  - {name: 🇦🇺 澳大利亚节点, type: select, include-all: true, filter: "(?i)澳|AU|Australia"}
+  - {name: 🇹🇷 土耳其节点, type: select, include-all: true, filter: "(?i)土耳其|TR|Turkey"}
+  - {name: 🇧🇷 巴西节点, type: select, include-all: true, filter: "(?i)巴西|BR|Brazil"}
+  - {name: 🇦🇷 阿根廷节点, type: select, include-all: true, filter: "(?i)阿根廷|AR|Argentina"}
   - {name: 🌐 全部节点, type: select, include-all: true}
 
 # 规则匹配
