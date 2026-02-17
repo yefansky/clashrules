@@ -94,6 +94,17 @@ dns:
     geoip-code: CN
     ipcidr:
       - 240.0.0.0/4
+  nameserver-policy:
+    # --- 国内解析加速（用腾讯/阿里 DoH） ---
+    "geosite:cn": https://doh.pub/dns-query
+    "geosite:xiaomi": https://doh.pub/dns-query     # 包含 mi.com, xiaomi.com, miui.com 等全部
+    "geosite:steam@cn": https://doh.pub/dns-query  # 专门针对 Steam 国内下载 CDN 解析
+
+    # --- 国外解析提速（防止 YouTube 预览图等问题） ---
+    "geosite:google": https://dns.google/dns-query
+    "geosite:youtube": https://dns.google/dns-query # 包含 i.ytimg.com 等图片域名
+    "geosite:geolocation-!cn": https://dns.google/dns-query
+    "geosite:category-porn": https://dns.google/dns-query # 成人网站建议走国外解析
  
 # 出站策略，根据自己情况调整每个策略里分组排序，增删都可以，比如把美国自动放到第一个，比如删除香港故转，注意别漏掉表情逗号等。
 # 如果相应分组没有筛选到对应的国家，请根据自己节点名字调整筛选关键字。
@@ -155,7 +166,7 @@ proxy-groups:
   - {name: 💶 PayPal, type: select, proxies: [直连, 🔯 香港故转, 🔯 台湾故转, 🔯 新加坡故转, 🔯 美国故转, 🌐 全部节点]}
   - {name: 🐬 OneDrive, type: select, proxies: [直连, 🔯 香港故转, 🔯 台湾故转, 🔯 新加坡故转, 🔯 美国故转, 🌐 全部节点]}
   
-  - {name: 🐟 漏网之鱼, type: select, proxies: [🚀 默认代理, 直连]}
+  - {name: 🐟 漏网之鱼, type: select, proxies: [直连, 🚀 默认代理]}
 
   # --- 2. 故障转移分组 (Fallback) - 16 个地区 ---
   - {name: 🔯 香港故转, type: fallback, include-all: true, interval: 300, filter: "(?i)港|HK|Hong Kong"}
@@ -217,7 +228,6 @@ proxy-groups:
 rules:
   - RULE-SET,private_ip,直连,no-resolve
   - RULE-SET,private_domain,直连
-  - DOMAIN-SUFFIX,qichiyu.com,🚀 默认代理
 
   # DDNS和IP查询API直连（从旧规则中提取）
   - DOMAIN-SUFFIX,checkip.dyndns.org,直连
@@ -256,7 +266,7 @@ rules:
   - DOMAIN-KEYWORD,geolocation,直连
   - DOMAIN-KEYWORD,geoip,直连
   - DOMAIN-KEYWORD,ipgeo,直连
-  
+
   # 向日葵(Oray)相关域名直连
   - DOMAIN-SUFFIX,oray.com,直连
   - DOMAIN-SUFFIX,oraybox.com,直连
@@ -268,66 +278,8 @@ rules:
   - DOMAIN-SUFFIX,cloudns.net,直连
   - DOMAIN-KEYWORD,sunlogin,直连
   - DOMAIN-KEYWORD,oray,直连
-  
-  # 其他自定义直连规则
-  - DOMAIN-KEYWORD,keke,直连
-  - DOMAIN-KEYWORD,touhou,直连
-  - DOMAIN-KEYWORD,weibo,直连
-  
-  # 网站特定代理规则
-  - DOMAIN-SUFFIX,qichiyu.com,🚀 默认代理
-  
-  # 个人兴趣媒体网站（从旧规则中提取，这些可能不在标准规则集中）
-  - DOMAIN-SUFFIX,huggingface.co,🤖 ChatGPT  # AI网站，归入ChatGPT组
-  - DOMAIN-SUFFIX,steampowered.com,🚀 默认代理
-  - DOMAIN-SUFFIX,steamcommunity.com,🚀 默认代理
-  - DOMAIN-SUFFIX,steamstatic.com,🚀 默认代理
-  - DOMAIN-SUFFIX,steam-chat.com,🚀 默认代理
-  - DOMAIN-SUFFIX,steamcdn-a.akamaihd.net,🚀 默认代理
-  - DOMAIN-SUFFIX,b49t.com,🚀 默认代理
-  - DOMAIN-SUFFIX,busfan.club,🚀 默认代理
-  - DOMAIN-SUFFIX,javdb521.com,🚀 默认代理
-  - DOMAIN-SUFFIX,avsox.website,🚀 默认代理
-  - DOMAIN-SUFFIX,javlibrary.com,🚀 默认代理
-  - DOMAIN-SUFFIX,airav.wiki,🚀 默认代理
-  - DOMAIN-SUFFIX,av-wiki.net,🚀 默认代理
-  - DOMAIN-SUFFIX,dl.getchu.com,🚀 默认代理
-  - DOMAIN-SUFFIX,dmm.co.jp,🚀 默认代理
-  - DOMAIN-SUFFIX,adult.contents.fc2.com,🚀 默认代理
-  - DOMAIN-SUFFIX,gyutto.com,🚀 默认代理
-  - DOMAIN-SUFFIX,jav321.com,🚀 默认代理
-  - DOMAIN-SUFFIX,javbus.com,🚀 默认代理
-  - DOMAIN-SUFFIX,javdb.com,🚀 默认代理
-  - DOMAIN-SUFFIX,mrzyx.xyz,🚀 默认代理
-  - DOMAIN-SUFFIX,mgstage.com,🚀 默认代理
-  - DOMAIN-SUFFIX,db.msin.jp,🚀 默认代理
-  - DOMAIN-SUFFIX,prestige-av.com,🚀 默认代理
-  - DOMAIN-SUFFIX,avsox.monster,🚀 默认代理
-  - DOMAIN-SUFFIX,tubeninja.net,🚀 默认代理
-  - DOMAIN-SUFFIX,plexmedia.cn,🚀 默认代理
-
 
   - RULE-SET,proxylite,🚀 默认代理
-
-
-  - DOMAIN-SUFFIX,openai.com,🤖 ChatGPT
-  - DOMAIN-SUFFIX,chatgpt.com,🤖 ChatGPT
-  - DOMAIN-SUFFIX,anthropic.com,🤖 ChatGPT  # Claude
-  - DOMAIN-SUFFIX,claude.ai,🤖 ChatGPT
-  - DOMAIN-SUFFIX,groq.com,🤖 ChatGPT
-  - DOMAIN-SUFFIX,groq.ai,🤖 ChatGPT
-  - DOMAIN-SUFFIX,gemini.google.com,🤖 ChatGPT
-  - DOMAIN-SUFFIX,bard.google.com,🤖 ChatGPT
-  
-  - DOMAIN-SUFFIX,huggingface.co,🚀 默认代理
-
-  - DOMAIN-SUFFIX,docker.com,🚀 默认代理
-  - DOMAIN-SUFFIX,docker.io,🚀 默认代理
-  - DOMAIN-SUFFIX,hub.docker.com,🚀 默认代理
-  - DOMAIN-SUFFIX,truenas.com,🚀 默认代理
-  - DOMAIN-SUFFIX,ixsystems.com,🚀 默认代理
-
-
   - RULE-SET,ai,🤖 ChatGPT
   - RULE-SET,github_domain,👨🏿‍💻 GitHub
   - RULE-SET,youtube_domain,📹 YouTube
@@ -343,9 +295,142 @@ rules:
   - RULE-SET,google_ip,🍀 Google
   - RULE-SET,netflix_ip,🎥 NETFLIX
   - RULE-SET,telegram_ip,📲 Telegram
-  - RULE-SET,geolocation-!cn,🚀 默认代理
-  - RULE-SET,cn_domain,直连
-  - RULE-SET,cn_ip,直连
+    
+  # 其他自定义直连规则
+  - DOMAIN-KEYWORD,keke,直连
+  - DOMAIN-KEYWORD,touhou,直连
+  - DOMAIN-KEYWORD,weibo,直连
+  
+  # 网站特定代理规则
+  - DOMAIN-SUFFIX,qichiyu.com,🚀 默认代理
+  - RULE-SET,xiaomi_domain,直连
+  
+  # 个人兴趣媒体网站（从旧规则中提取，这些可能不在标准规则集中）
+
+  - DOMAIN-SUFFIX,steampowered.com,🎮 Steam
+  - DOMAIN-SUFFIX,steamcommunity.com,🎮 Steam
+  - DOMAIN-SUFFIX,steamstatic.com,🎮 Steam
+  - DOMAIN-SUFFIX,steamusercontent.com,🎮 Steam
+  - DOMAIN-SUFFIX,steamuserimages.com,🎮 Steam
+  - DOMAIN-SUFFIX,steam-chat.com,🎮 Steam
+  - DOMAIN-SUFFIX,valvesoftware.com,🎮 Steam
+  - DOMAIN-SUFFIX,valve.net,🎮 Steam
+  - DOMAIN-SUFFIX,akamai.net,🎮 Steam
+  - DOMAIN-SUFFIX,akamaiedge.net,🎮 Steam
+  - DOMAIN-SUFFIX,akamaitechnologies.com,🎮 Steam
+  - DOMAIN-SUFFIX,cloudflare.com,🎮 Steam
+  - DOMAIN-SUFFIX,cloudflare.net,🎮 Steam
+  - DOMAIN-SUFFIX,edgekey.net,🎮 Steam
+  - DOMAIN-SUFFIX,edgesuite.net,🎮 Steam
+  - DOMAIN-SUFFIX,srip.net,🎮 Steam
+  - DOMAIN-SUFFIX,steamcdn-a.akamaihd.net,🎮 Steam
+  - DOMAIN-SUFFIX,steamstore-a.akamaihd.net,🎮 Steam
+  - DOMAIN-SUFFIX,steamvideo-a.akamaihd.net,🎮 Steam
+  - DOMAIN-SUFFIX,steamcontent.com,🎮 Steam
+  - DOMAIN-SUFFIX,steamgames.com,🎮 Steam
+  - DOMAIN-KEYWORD,steam,🎮 Steam
+
+  # 游戏与下载
+  - RULE-SET,steam_domain,🎮 Steam
+  - RULE-SET,games_domain,🎮 Steam  # 也可以共用一个组
+
+  # 影视刮削与成人内容
+  - RULE-SET,tmdb_domain,🚀 默认代理  # 建议走代理，国内直连经常断图
+  - RULE-SET,porn_domain,🔞 Porn
+
+    # 小米相关
+  - DOMAIN-SUFFIX,mi.com,直连
+  - DOMAIN-SUFFIX,xiaomi.com,直连
+  - DOMAIN-SUFFIX,xiaomi.net,直连
+  - DOMAIN-SUFFIX,miui.com,直连
+  - DOMAIN-SUFFIX,miwifi.com,直连
+  - DOMAIN-SUFFIX,miot-spec.com,直连
+  - DOMAIN-KEYWORD,mi.com,直连
+  - DOMAIN-KEYWORD,xiaomi,直连
+  
+  - DOMAIN-SUFFIX,b49t.com,🔞 Porn
+  - DOMAIN-SUFFIX,busfan.club,🔞 Porn
+  - DOMAIN-SUFFIX,javdb521.com,🔞 Porn
+  - DOMAIN-SUFFIX,avsox.website,🔞 Porn
+  - DOMAIN-SUFFIX,javlibrary.com,🔞 Porn
+  - DOMAIN-SUFFIX,airav.wiki,🔞 Porn
+  - DOMAIN-SUFFIX,av-wiki.net,🔞 Porn
+  - DOMAIN-SUFFIX,dl.getchu.com,🔞 Porn
+  - DOMAIN-SUFFIX,dmm.co.jp,🔞 Porn
+  - DOMAIN-SUFFIX,adult.contents.fc2.com,🔞 Porn
+  - DOMAIN-SUFFIX,gyutto.com,🔞 Porn
+  - DOMAIN-SUFFIX,jav321.com,🔞 Porn
+  - DOMAIN-SUFFIX,javbus.com,🔞 Porn
+  - DOMAIN-SUFFIX,javdb.com,🔞 Porn
+  - DOMAIN-SUFFIX,mrzyx.xyz,🔞 Porn
+  - DOMAIN-SUFFIX,mgstage.com,🔞 Porn
+  - DOMAIN-SUFFIX,db.msin.jp,🔞 Porn
+  - DOMAIN-SUFFIX,prestige-av.com,🔞 Porn
+  - DOMAIN-SUFFIX,avsox.monster,🔞 Porn
+  - DOMAIN-SUFFIX,tubeninja.net,🔞 Porn
+  - DOMAIN-SUFFIX,javbus.one,🔞 Porn
+  - DOMAIN-SUFFIX,javbus.cc,🔞 Porn
+  - DOMAIN-SUFFIX,javdb.me,🔞 Porn
+  - DOMAIN-SUFFIX,javdb00.com,🔞 Porn
+  - DOMAIN-SUFFIX,missav.com,🔞 Porn
+  - DOMAIN-SUFFIX,missav.ai,🔞 Porn
+  - DOMAIN-SUFFIX,jable.tv,🔞 Porn
+  - DOMAIN-SUFFIX,7mmtv.tv,🔞 Porn
+  - DOMAIN-SUFFIX,hpvfree.com,🔞 Porn
+  - DOMAIN-SUFFIX,netflav.com,🔞 Porn
+  - DOMAIN-SUFFIX,dmm.com,🔞 Porn
+  - DOMAIN-SUFFIX,fanza.jp,🔞 Porn
+  - DOMAIN-SUFFIX,p-v.jp,🔞 Porn # Prestige 官网资源
+  - DOMAIN-SUFFIX,s-museum.jp,🔞 Porn # Soft On Demand
+  - DOMAIN-SUFFIX,nhentai.net,🔞 Porn
+  - DOMAIN-SUFFIX,wnacg.com,🔞 Porn
+  - DOMAIN-SUFFIX,pornhub.com,🔞 Porn
+  - DOMAIN-SUFFIX,phncdn.com,🔞 Porn # Pornhub 静态资源 CDN
+  - DOMAIN-SUFFIX,spankbang.com,🔞 Porn
+  - DOMAIN-SUFFIX,xvideos.com,🔞 Porn
+  
+  - DOMAIN-SUFFIX,plexmedia.cn,🚀 默认代理
+
+  - DOMAIN-SUFFIX,huggingface.co,🤖 ChatGPT  # AI网站，归入ChatGPT组
+  - DOMAIN-SUFFIX,openai.com,🤖 ChatGPT
+  - DOMAIN-SUFFIX,chatgpt.com,🤖 ChatGPT
+  - DOMAIN-SUFFIX,anthropic.com,🤖 ChatGPT  # Claude
+  - DOMAIN-SUFFIX,claude.ai,🤖 ChatGPT
+  - DOMAIN-SUFFIX,groq.com,🤖 ChatGPT
+  - DOMAIN-SUFFIX,groq.ai,🤖 ChatGPT
+  - DOMAIN-SUFFIX,gemini.google.com,🤖 ChatGPT
+  - DOMAIN-SUFFIX,bard.google.com,🤖 ChatGPT
+  - DOMAIN-SUFFIX,grok.com,🤖 ChatGPT
+  - DOMAIN-SUFFIX,oaistatic.com,🤖 ChatGPT
+  - DOMAIN-SUFFIX,oaiusercontent.com,🤖 ChatGPT
+  - DOMAIN-SUFFIX,sentry.io,🤖 ChatGPT
+  - DOMAIN-SUFFIX,intercom.io,🤖 ChatGPT
+  - DOMAIN-SUFFIX,identrust.com,🤖 ChatGPT
+  - DOMAIN-SUFFIX,vimeo.com,🤖 ChatGPT # OpenAI Sora 视频预览常用
+  - DOMAIN-SUFFIX,claude.sh,🤖 ChatGPT
+  - DOMAIN-SUFFIX,mistral.ai,🤖 ChatGPT
+  - DOMAIN-SUFFIX,perplexity.ai,🤖 ChatGPT
+  
+  - DOMAIN-SUFFIX,huggingface.co,🚀 默认代理
+
+  - DOMAIN-SUFFIX,docker.com,🚀 默认代理
+  - DOMAIN-SUFFIX,docker.io,🚀 默认代理
+  - DOMAIN-SUFFIX,hub.docker.com,🚀 默认代理
+  - DOMAIN-SUFFIX,truenas.com,🚀 默认代理
+  - DOMAIN-SUFFIX,ixsystems.com,🚀 默认代理
+
+  - DOMAIN-SUFFIX,tmdb.org,🚀 默认代理 # 影视刮削必备
+  - DOMAIN-SUFFIX,themoviedb.org,🚀 默认代理
+  - DOMAIN-SUFFIX,tvmaze.com,🚀 默认代理
+  - DOMAIN-SUFFIX,trakt.tv,🚀 默认代理
+
+  # 广告拦截
+  - RULE-SET,ads_domain,REJECT
+
+  - RULE-SET,cn_domain,直连               # 国内域名优先直连
+  - RULE-SET,geolocation-!cn,🚀 默认代理  # 国外域名走代理
+  - RULE-SET,cn_ip,直连                   # 国内IP直连（兜底）
+
   - MATCH,🐟 漏网之鱼
 
 # 规则集
@@ -379,3 +464,15 @@ rule-providers:
   telegram_ip: { <<: *ip, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/telegram.mrs"}
   netflix_ip: { <<: *ip, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/netflix.mrs"}
   apple_ip: {<<: *ip, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo-lite/geoip/apple.mrs"}
+  # Steam 专用（包含商店、社区、API等）
+  steam_domain: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/steam.mrs" }
+  # 成人内容（聚合了全球主流成人网站）
+  porn_domain: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-porn.mrs" }
+  # 媒体刮削器（TMDB / TVDB / Trakt 等，影视库必备）
+  tmdb_domain: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/tmdb.mrs" }
+  # 游戏分流（涵盖主流游戏平台：Epic, EA, Ubisoft, Blizzard 等）
+  games_domain: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-games.mrs" }
+  # 广告拦截（如果你想通过规则过滤一部分网页广告）
+  ads_domain: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ads-all.mrs" }
+  # 小米/米家 专用规则集
+  xiaomi_domain: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/xiaomi.mrs" }
